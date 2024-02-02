@@ -5,9 +5,6 @@ import java.util.Scanner;
 
 public class Main {
     public static void lerArquivo(List<Cliente> clientes, List<Conta> contas) {
-        Cliente c = new Cliente(null, null);
-        Conta ct = new Conta(null, 0, null);
-
         try{
 
             BufferedReader clientesRead = new BufferedReader(new InputStreamReader(new FileInputStream("clientes.txt"), "UTF-8"));
@@ -19,11 +16,8 @@ public class Main {
             while((linha = clientesRead.readLine()) != null) {
                 info = linha.split(",");
 
-                c.setNome(info[0]);
-                c.setCpf(info[1]);
-            }
+                Cliente c = new Cliente(info[0], info[1]);
 
-            if(c.getCpf() != null) {
                 clientes.add(c);
             }
 
@@ -32,12 +26,8 @@ public class Main {
             while((linha = contasRead.readLine()) != null) {
                 info = linha.split(",");
 
-                ct.setTipo(info[0]);
-                ct.setSaldo(Double.parseDouble(info[1]));
-                ct.setCpfCliente(info[2]);
-            }
+                Conta ct = new Conta(info[0], Double.parseDouble(info[1]), info[2]);
 
-            if(ct.getCpfCliente() != null) {
                 contas.add(ct);
             }
 
@@ -46,6 +36,7 @@ public class Main {
         }catch(IOException e) {
             e.printStackTrace();
         }
+
     }
     public static int MenuInicial(Scanner sc) {
         int op;
@@ -56,7 +47,7 @@ public class Main {
                 1. Cadastrar uma conta
                 2. Consultar uma conta
                 3. Transferir valor
-                4. Receber valor
+                4. Depositar valor
                 5. Sair
                 """;
 
@@ -64,7 +55,7 @@ public class Main {
         System.out.print("Digite a opção escolhida aqui: ");
         op = sc.nextInt();
 
-        while(op >= 1 && op <= 5) {
+        while(op < 1 || op > 5) {
             System.out.print("Opção inválida! Tente novamente: ");
             op = sc.nextInt();
         }
@@ -73,23 +64,34 @@ public class Main {
     }
 
     public static void ExibirDados(List<Cliente> clientes, String cpfInput, List<Conta> contas) {
+        String nome = null, cpf = null, tipoConta = null;
+        double saldo = 0;
+
         System.out.println("\n*********************");
         if(clienteCadastrado(cpfInput, clientes)) {
             for(int i = 0; i < clientes.size(); i++) {
                 if(clientes.get(i).getCpf().equals(cpfInput)) {
-                    System.out.println(String.format("Nome: %s", clientes.get(i).getNome()));
+                    nome = clientes.get(i).getNome();
+                    cpf = clientes.get(i).getCpf();
                 }
             }
 
             for(int i = 0; i < contas.size(); i++) {
                 if(contas.get(i).getCpfCliente().equals(cpfInput)) {
-                    System.out.println(String.format("Tipo da conta: %s", contas.get(i).getTipo()));
-                    System.out.println(String.format("Saldo disponível: R$%.2f", contas.get(i).getSaldo()));
+                    tipoConta = contas.get(i).getTipo();
+                    saldo = contas.get(i).getSaldo();
                 }
             }
+
+            System.out.println("Nome: " + nome);
+            System.out.println("CPF:" + cpf);
+            System.out.println("Tipo da conta: " + tipoConta);
+            System.out.println("Saldo disponível: " + saldo);
+
         }else {
             System.out.println("Cliente não encontrado!");
         }
+
         System.out.println("********************");
     }
 
@@ -99,14 +101,65 @@ public class Main {
                 return true;
             }
         }
-
         return false;
     }
 
+    public static void transferirValor(String cpfClienteTransfere, String cpfClienteRecebe, List<Conta> contas, double valor, PrintWriter contasFile)  {
+        double saldoAntes = 0, saldoDepois = 0;
+        boolean flag = false;
+
+        for(int i = 0; i < contas.size(); i++) {
+            if(contas.get(i).getCpfCliente().equals(cpfClienteTransfere)) {
+                saldoAntes = contas.get(i).getSaldo();
+
+                if(valor <= contas.get(i).getSaldo()) {
+                    contas.get(i).setSaldo(contas.get(i).getSaldo() - valor); //subtraindo valor de quem está transferindo
+                    saldoDepois = contas.get(i).getSaldo();
+                }else {
+                    System.out.println("\nSaldo insuficiente!");
+                    flag = true;
+                    break;
+                }
+
+                try {
+                    reescreverArquivo(contas);
+
+                } catch (FileNotFoundException e) {
+                    System.out.println(e);
+                }
+            }
+
+            if(contas.get(i).getCpfCliente().equals(cpfClienteRecebe)) {
+                contas.get(i).setSaldo(contas.get(i).getSaldo() + valor); //adicionando valor no saldo de quem recebeu a transferência
+
+                try {
+                    reescreverArquivo(contas);
+
+                } catch (FileNotFoundException e) {
+                    System.out.println(e);
+                }
+            }
+        }
+
+        if(!flag) {
+            System.out.println("\nTransferência concluída!");
+
+            System.out.println("\nSeu saldo antes da transferência: " + saldoAntes);
+            System.out.println("Seu saldo após a transferência: " + saldoDepois);
+        }
+    }
+
+    public static void reescreverArquivo(List<Conta> contas) throws FileNotFoundException {
+        //reescrevendo o arquivo
+        PrintWriter contasFile = new PrintWriter(new FileOutputStream(new File("contas.txt")));
+
+        for(int i = 0; i < contas.size(); i++) {
+            contasFile.println(contas.get(i).getTipo() + "," + contas.get(i).getSaldo() + "," + contas.get(i).getCpfCliente());
+        }
+
+        contasFile.close();
+    }
     public static void main(String[] args) throws FileNotFoundException {
-        //criando arquivos que funcionarão como um banco de dados
-        PrintWriter clientesFile = new PrintWriter(new FileOutputStream(new File("clientes.txt"), true));
-        PrintWriter contasFile = new PrintWriter(new FileOutputStream(new File("contas.txt"), true));
 
         List<Cliente> clientes = new ArrayList<Cliente>();
         List<Conta> contas = new ArrayList<Conta>();
@@ -119,10 +172,13 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         op = MenuInicial(sc);
 
-        //lendo os arquivos e armazenando os arrays
-        lerArquivo(clientes, contas);
-
         do {
+            //criando arquivos que funcionarão como um banco de dados
+            PrintWriter clientesFile = new PrintWriter(new FileOutputStream(new File("clientes.txt"), true));
+            PrintWriter contasFile = new PrintWriter(new FileOutputStream(new File("contas.txt"), true));
+
+            //lendo os arquivos e armazenando os arrays
+            lerArquivo(clientes, contas);
             switch (op) {
                 case 1:
                     sc.nextLine();
@@ -155,7 +211,7 @@ public class Main {
                         Conta conta = new Conta(tipoConta, saldo, cpf);
                         contasFile.println(conta.getTipo() + "," + conta.getSaldo() + "," + conta.getCpfCliente());
 
-                        System.out.println("Cliente cadastrado!");
+                        System.out.println("\nCliente cadastrado!");
                     }
 
                     break;
@@ -168,12 +224,37 @@ public class Main {
                     ExibirDados(clientes, cpfInput, contas);
                     break;
 
+                case 3:
+                    sc.nextLine();
+                    System.out.print("Digite seu CPF: ");
+                    String cpfTransfere = sc.next();
+
+                    sc.nextLine();
+                    System.out.print("Digite o CPF do proprietário da conta que irá receber a transferência: ");
+                    String cpfRecebe = sc.next();
+
+                    if(clienteCadastrado(cpfTransfere, clientes) && clienteCadastrado(cpfRecebe, clientes)) {
+                        sc.nextLine();
+                        System.out.print("Digite o valor a ser transferido: ");
+                        double valor = sc.nextDouble();
+
+                        transferirValor(cpfTransfere, cpfRecebe, contas, valor, contasFile);
+
+                    }else {
+                        System.out.println("Cliente(s) não encontrado(s)!");
+                    }
+                    break;
+
                 case 5:
                     System.out.println("\n*************************");
                     System.out.println("Volte sempre!");
                     System.out.println("*************************");
                     break;
+
             }
+
+            contasFile.close();
+            clientesFile.close();
 
             try {
                 Thread.sleep(2000);
@@ -187,8 +268,6 @@ public class Main {
 
         }while(op != 5);
 
-        contasFile.close();
-        clientesFile.close();
         sc.close();
     }
 }
