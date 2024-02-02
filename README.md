@@ -24,3 +24,10 @@ O objetivo desse projeto é colocar em prática os conhecimentos adquiridos no c
 `Consultar uma conta`: com essa opção, o usuário pode visualizar todas as informações sobre sua conta, ao inserir seu CPF, que será lido pelo programa, que por sua vez irá verificar se o cliente existe na base de dados do sistema - por meio da leitura de uma lista populada com a leitura do arquivo com os dados dos clientes - e, caso o cliente exista, suas informações serão exibidas ao usuário;
 
   ![image](https://github.com/Maria-Faria/BankingSystem/assets/114308727/fab8b701-07f0-477d-af8d-cbc4203e9a88)
+
+`Transferir valor`: o usuário pode realizar a transferência de um valor de sua conta para outra, de sua escolha, sendo preciso apenas inserir seu CPF e o CPF do proprietário da conta que receberá a transferência, assim, após verificar se ambos os clientes existem no sistema, o programa solicita o valor a ser transferido, subtrai o mesmo da conta do usuário que está realizando a tranferência e adiciona ao atributo _saldo_ da conta que receberá o valor;
+
+  ![image](https://github.com/Maria-Faria/BankingSystem/assets/114308727/4641de7e-1a02-476b-a816-3a412c19f463)
+
+
+`Depositar valor`:
