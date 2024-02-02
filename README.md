@@ -20,3 +20,7 @@ O objetivo desse projeto é colocar em prática os conhecimentos adquiridos no c
 `Cadastrar uma conta`: ao escolher a opção de cadastro de conta, o usuário deverá inserir seu nome e seu CPF - que serão atributos de um objeto da classe _Cliente_ -, bem como o tipo da conta a ser cadastrada e o saldo disponível na mesma - que, juntamente com o CPF do cliente, serão atributos da classe _Conta_ -, além disso, depois de coletar o CPF do cliente, o programa faz uma verificação para validar se o CPF informado já está cadastrado, por meio da leitura do arquivo a cada iteração do laço de repetição que possibilita ao usuário o menu de opções, assim, após realizada a devida validação, as informações coletadas serão escritas nos arquivos referentes aos clientes e às contas;
 
   ![image](https://github.com/Maria-Faria/BankingSystem/assets/114308727/eb84b631-5cc6-473b-b804-c6c34bc0e729)
+
+`Consultar uma conta`: com essa opção, o usuário pode visualizar todas as informações sobre sua conta, ao inserir seu CPF, que será lido pelo programa, que por sua vez irá verificar se o cliente existe na base de dados do sistema - por meio da leitura de uma lista populada com a leitura do arquivo com os dados dos clientes - e, caso o cliente exista, suas informações serão exibidas ao usuário;
+
+  ![image](https://github.com/Maria-Faria/BankingSystem/assets/114308727/fab8b701-07f0-477d-af8d-cbc4203e9a88)
