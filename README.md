@@ -1,5 +1,5 @@
 # 🏦 Banking System
-🚧`em construção`🚧
+`finalizado`
 
 # ✏️ Descrição do projeto
 O objetivo desse projeto é colocar em prática os conhecimentos adquiridos no curso introdutório à linguagem Java da plataforma Alura, bem como relembrar conceitos vistos em aulas da faculdade de Análise e Desenvolvimento de Sistemas, por meio da criação de um sistema bancário com dados de clientes e suas contas.
@@ -30,4 +30,7 @@ O objetivo desse projeto é colocar em prática os conhecimentos adquiridos no c
   ![image](https://github.com/Maria-Faria/BankingSystem/assets/114308727/4641de7e-1a02-476b-a816-3a412c19f463)
 
 
-`Depositar valor`:
+`Depositar valor`: do mesmo da função de transferência, a função de depósito solicita o CPF do usuário e o valor a ser depositado, posteriormente verifica a existência do cliente e, caso ele esteja cadastrado, o valor informado é adicionado à conta, além disso, vale ressaltar que, tanto após executar a função de transferência, quanto após executar a função de depósito, o arquivo referente às contas cadastradas será reescrito com as informações atualizadas, funcionando como um banco de dados que é atualizado a cada alteração.
+
+  ![image](https://github.com/Maria-Faria/BankingSystem/assets/114308727/142ad826-6d26-41d1-906f-6d55a1bf1ad8)
+
