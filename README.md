@@ -16,3 +16,7 @@ O objetivo desse projeto é colocar em prática os conhecimentos adquiridos no c
 `Escrever nos arquivos`: ao executar o programa, é exibido um menu ao usuário, que permite que ele realize o cadastro de uma conta e, após inserir as informações necessárias, os dados serão transferidos aos arquivos correspondentes;
 
   ![image](https://github.com/Maria-Faria/BankingSystem/assets/114308727/5c665218-a586-4e19-ad21-c522b46e8acd)
+
+`Cadastrar uma conta`: ao escolher a opção de cadastro de conta, o usuário deverá inserir seu nome e seu CPF - que serão atributos de um objeto da classe _Cliente_ -, bem como o tipo da conta a ser cadastrada e o saldo disponível na mesma - que, juntamente com o CPF do cliente, serão atributos da classe _Conta_ -, além disso, depois de coletar o CPF do cliente, o programa faz uma verificação para validar se o CPF informado já está cadastrado, por meio da leitura do arquivo a cada iteração do laço de repetição que possibilita ao usuário o menu de opções, assim, após realizada a devida validação, as informações coletadas serão escritas nos arquivos referentes aos clientes e às contas;
+
+  ![image](https://github.com/Maria-Faria/BankingSystem/assets/114308727/eb84b631-5cc6-473b-b804-c6c34bc0e729)
