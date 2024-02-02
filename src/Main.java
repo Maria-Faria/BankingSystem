@@ -55,14 +55,16 @@ public class Main {
                 
                 1. Cadastrar uma conta
                 2. Consultar uma conta
-                3. Sair
+                3. Transferir valor
+                4. Receber valor
+                5. Sair
                 """;
 
         System.out.println(menu);
         System.out.print("Digite a opção escolhida aqui: ");
         op = sc.nextInt();
 
-        while(op != 1 && op != 2 && op != 3) {
+        while(op >= 1 && op <= 5) {
             System.out.print("Opção inválida! Tente novamente: ");
             op = sc.nextInt();
         }
@@ -166,7 +168,7 @@ public class Main {
                     ExibirDados(clientes, cpfInput, contas);
                     break;
 
-                case 3:
+                case 5:
                     System.out.println("\n*************************");
                     System.out.println("Volte sempre!");
                     System.out.println("*************************");
@@ -183,7 +185,7 @@ public class Main {
             System.out.println("\n");
             op = MenuInicial(sc);
 
-        }while(op != 3);
+        }while(op != 5);
 
         contasFile.close();
         clientesFile.close();
