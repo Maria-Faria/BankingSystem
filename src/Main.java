@@ -86,7 +86,7 @@ public class Main {
             System.out.println("Nome: " + nome);
             System.out.println("CPF:" + cpf);
             System.out.println("Tipo da conta: " + tipoConta);
-            System.out.println("Saldo disponível: " + saldo);
+            System.out.println(String.format("Saldo disponível: R$%.2f", saldo));
 
         }else {
             System.out.println("Cliente não encontrado!");
@@ -104,7 +104,7 @@ public class Main {
         return false;
     }
 
-    public static void transferirValor(String cpfClienteTransfere, String cpfClienteRecebe, List<Conta> contas, double valor, PrintWriter contasFile)  {
+    public static void transferirValor(String cpfClienteTransfere, String cpfClienteRecebe, List<Conta> contas, double valor)  {
         double saldoAntes = 0, saldoDepois = 0;
         boolean flag = false;
 
@@ -120,25 +120,18 @@ public class Main {
                     flag = true;
                     break;
                 }
-
-                try {
-                    reescreverArquivo(contas);
-
-                } catch (FileNotFoundException e) {
-                    System.out.println(e);
-                }
             }
 
             if(contas.get(i).getCpfCliente().equals(cpfClienteRecebe)) {
                 contas.get(i).setSaldo(contas.get(i).getSaldo() + valor); //adicionando valor no saldo de quem recebeu a transferência
-
-                try {
-                    reescreverArquivo(contas);
-
-                } catch (FileNotFoundException e) {
-                    System.out.println(e);
-                }
             }
+        }
+
+        try {
+            reescreverArquivo(contas);
+
+        } catch (FileNotFoundException e) {
+            System.out.println(e);
         }
 
         if(!flag) {
@@ -149,6 +142,28 @@ public class Main {
         }
     }
 
+    public static void depositarValor(String cpfCliente, List<Conta> contas, double valor) {
+        double saldoAntes = 0, saldoDepois = 0;
+
+        for(int i = 0; i < contas.size(); i++) {
+            if(contas.get(i).getCpfCliente().equals(cpfCliente)) {
+                saldoAntes = contas.get(i).getSaldo();
+                contas.get(i).setSaldo(saldoAntes + valor);
+                saldoDepois = contas.get(i).getSaldo();
+            }
+        }
+
+        try {
+            reescreverArquivo(contas);
+
+        } catch (FileNotFoundException e) {
+            System.out.println(e);
+        }
+        System.out.println("\nDepósito concluído!!");
+
+        System.out.println("\nSeu saldo antes do depósito: " + saldoAntes);
+        System.out.println("Seu saldo após o depósito: " + saldoDepois);
+    }
     public static void reescreverArquivo(List<Conta> contas) throws FileNotFoundException {
         //reescrevendo o arquivo
         PrintWriter contasFile = new PrintWriter(new FileOutputStream(new File("contas.txt")));
@@ -190,8 +205,6 @@ public class Main {
 
                     for(int i = 0; i < clientes.size(); i++) {
                         if(clientes.get(i).getCpf().equals(cpf)) {
-                            System.out.println("Conta já existe!");
-                            ExibirDados(clientes, cpf, contas);
                             clienteExiste = true;
                         }
                     }
@@ -212,6 +225,10 @@ public class Main {
                         contasFile.println(conta.getTipo() + "," + conta.getSaldo() + "," + conta.getCpfCliente());
 
                         System.out.println("\nCliente cadastrado!");
+
+                    }else {
+                        System.out.println("\nConta já existe!");
+                        ExibirDados(clientes, cpf, contas);
                     }
 
                     break;
@@ -234,15 +251,32 @@ public class Main {
                     String cpfRecebe = sc.next();
 
                     if(clienteCadastrado(cpfTransfere, clientes) && clienteCadastrado(cpfRecebe, clientes)) {
-                        sc.nextLine();
                         System.out.print("Digite o valor a ser transferido: ");
                         double valor = sc.nextDouble();
 
-                        transferirValor(cpfTransfere, cpfRecebe, contas, valor, contasFile);
+                        transferirValor(cpfTransfere, cpfRecebe, contas, valor);
 
                     }else {
                         System.out.println("Cliente(s) não encontrado(s)!");
                     }
+                    break;
+
+                case 4:
+                    sc.nextLine();
+                    System.out.print("Digite seu CPF: ");
+                    String cpfDeposito = sc.next();
+
+                    if(clienteCadastrado(cpfDeposito, clientes)) {
+                        sc.nextLine();
+                        System.out.print("Digite o valor a ser depositado: ");
+                        double valor = sc.nextDouble();
+
+                        depositarValor(cpfDeposito, contas, valor);
+
+                    }else {
+                        System.out.println("Cliente não encontrado!");
+                    }
+
                     break;
 
                 case 5:
